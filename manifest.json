@@ -1,0 +1,18 @@
+{
+  "name": "Panchāṅgam",
+  "short_name": "Panchāṅgam",
+  "description": "Hindu astronomical calendar — tithi, māsa, ṛtu, ayana, moon phase, sun position, abhijit lagnam, and weather.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#F7F0E4",
+  "theme_color": "#C06818",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23C06818'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white'>☉</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

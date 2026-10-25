@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Panchāṅgam</title>
+<meta name="description" content="Hindu astronomical calendar — tithi, māsa, ṛtu, ayana, moon phase, sun position, abhijit lagnam, and weather.">
+<meta name="theme-color" content="#C06818">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600&display=swap">
+<style>
+:root {
+  --bg: #F7F0E4;
+  --bg-card: #FFFBF4;
+  --fg: #2A1A0E;
+  --fg-muted: #6B5744;
+  --accent: #C06818;
+  --accent-soft: #E8C9A0;
+  --gold: #B08830;
+  --border: #E0D4C2;
+  --divider: #D4C4AA;
+  --moon-dark: #3A3028;
+  --moon-lit: #F5ECD8;
+  --sky-day: #B8D8E8;
+  --sky-dawn: #E8A868;
+  --sun-fill: #E8A020;
+  --horizon: #6B8848;
+  --success: #4A8848;
+  --warn: #C87830;
+  --font-display: 'Cormorant Garamond', 'Georgia', serif;
+  --font-body: 'Source Sans 3', 'Segoe UI', system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #171210; --bg-card: #221C16; --fg: #E4D8C8; --fg-muted: #A09080;
+    --accent: #E08838; --accent-soft: #4A3828; --gold: #C8A048;
+    --border: #3A3028; --divider: #3A3028; --moon-dark: #1A1610;
+    --moon-lit: #E8DCC8; --sky-day: #2A3848; --sky-dawn: #5A3818;
+    --sun-fill: #E8A020; --horizon: #3A5030; --success: #68A860; --warn: #E09048;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #171210; --bg-card: #221C16; --fg: #E4D8C8; --fg-muted: #A09080;
+  --accent: #E08838; --accent-soft: #4A3828; --gold: #C8A048;
+  --border: #3A3028; --divider: #3A3028; --moon-dark: #1A1610;
+  --moon-lit: #E8DCC8; --sky-day: #2A3848; --sky-dawn: #5A3818;
+  --sun-fill: #E8A020; --horizon: #3A5030; --success: #68A860; --warn: #E09048;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; margin: 0; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font-body);
+  padding: 0 16px; max-width: 520px; margin: 0 auto;
+  -webkit-font-smoothing: antialiased;
+}
+.header { text-align: center; padding: 24px 0 16px; }
+.header h1 { font-family: var(--font-display); font-weight: 700; font-size: 2rem; color: var(--accent); letter-spacing: 0.02em; }
+.header .subtitle { font-family: var(--font-display); font-size: 1.1rem; color: var(--fg-muted); margin: 2px 0 0; font-style: italic; }
+.header .date-line { font-size: 0.85rem; color: var(--fg-muted); margin-top: 8px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
+.year-banner { text-align: center; padding: 10px 0; margin-bottom: 8px; }
+.year-banner .telugu-year { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--gold); }
+.year-banner .year-sub { font-size: 0.8rem; color: var(--fg-muted); margin-top: 2px; }
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+.card-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-muted); margin-bottom: 6px; }
+.card-value { font-family: var(--font-display); font-size: 1.4rem; font-weight: 600; color: var(--fg); line-height: 1.2; }
+.card-detail { font-size: 0.82rem; color: var(--fg-muted); margin-top: 4px; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.four-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.four-grid .cell { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; text-align: center; }
+.four-grid .cell-label { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-muted); margin-bottom: 4px; }
+.four-grid .cell-value { font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; color: var(--fg); }
+.four-grid .cell-sub { font-size: 0.75rem; color: var(--fg-muted); margin-top: 2px; }
+.visual-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 12px; text-align: center; }
+.visual-card svg { display: block; margin: 8px auto 0; }
+.abhijit-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 14px; }
+.abhijit-icon { width: 42px; height: 42px; flex-shrink: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
+.abhijit-active { background: var(--success); color: #fff; }
+.abhijit-inactive { background: var(--accent-soft); color: var(--fg-muted); }
+.abhijit-body { min-width: 0; }
+.abhijit-title { font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; }
+.abhijit-time { font-size: 0.85rem; color: var(--fg-muted); margin-top: 2px; font-variant-numeric: tabular-nums; }
+.abhijit-note { font-size: 0.78rem; color: var(--warn); margin-top: 2px; font-style: italic; }
+.weather-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 24px; display: flex; align-items: center; gap: 16px; }
+.weather-temp { font-family: var(--font-display); font-size: 2.2rem; font-weight: 700; line-height: 1; color: var(--fg); }
+.weather-temp-alt { font-size: 0.85rem; color: var(--fg-muted); font-family: var(--font-body); font-weight: 400; }
+.weather-desc { font-size: 0.85rem; color: var(--fg-muted); margin-top: 2px; }
+.weather-icon { font-size: 2.4rem; flex-shrink: 0; }
+.weather-error { font-size: 0.82rem; color: var(--fg-muted); font-style: italic; }
+.location-bar { text-align: center; padding: 0 0 12px; font-size: 0.75rem; color: var(--fg-muted); }
+.location-bar button { background: none; border: none; color: var(--accent); cursor: pointer; font-size: 0.75rem; text-decoration: underline; font-family: var(--font-body); padding: 0; margin-left: 4px; }
+.footer { text-align: center; font-size: 0.7rem; color: var(--fg-muted); padding: 0 0 20px; line-height: 1.5; }
+@media (max-width: 380px) {
+  .header h1 { font-size: 1.7rem; }
+  .two-col { grid-template-columns: 1fr; }
+  .card-value { font-size: 1.2rem; }
+  .weather-temp { font-size: 1.8rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>पञ्चाङ्गम्</h1>
+  <div class="subtitle">Panchāṅgam</div>
+  <div class="date-line" id="dateDisplay"></div>
+</div>
+
+<div class="year-banner">
+  <div class="telugu-year" id="teluguYearDisplay"></div>
+  <div class="year-sub" id="yearSub"></div>
+</div>
+
+<div class="location-bar" id="locationBar">
+  📍 Deep River, ON
+  <button onclick="requestLocation()">Use my location</button>
+</div>
+
+<div class="two-col">
+  <div class="card">
+    <div class="card-label">Tithi at Sunrise</div>
+    <div class="card-value" id="sunriseTithi">—</div>
+    <div class="card-detail" id="sunriseTithiDetail"></div>
+  </div>
+  <div class="card">
+    <div class="card-label">Current Tithi</div>
+    <div class="card-value" id="currentTithi">—</div>
+    <div class="card-detail" id="currentTithiDetail"></div>
+  </div>
+</div>
+
+<div class="four-grid">
+  <div class="cell"><div class="cell-label">Pakṣa</div><div class="cell-value" id="pakshaVal">—</div><div class="cell-sub" id="pakshaSub"></div></div>
+  <div class="cell"><div class="cell-label">Māsa</div><div class="cell-value" id="masaVal">—</div><div class="cell-sub" id="masaSub"></div></div>
+  <div class="cell"><div class="cell-label">Ṛtu</div><div class="cell-value" id="rituVal">—</div><div class="cell-sub" id="rituSub"></div></div>
+  <div class="cell"><div class="cell-label">Ayana</div><div class="cell-value" id="ayanaVal">—</div><div class="cell-sub" id="ayanaSub"></div></div>
+</div>
+
+<div class="visual-card">
+  <div class="card-label">Moon Phase</div>
+  <svg id="moonSvg" viewBox="0 0 120 120" width="100" height="100"></svg>
+  <div class="card-detail" id="moonDetail"></div>
+</div>
+
+<div class="visual-card">
+  <div class="card-label">Ṣaṭkāla — Sun Position</div>
+  <svg id="sunSvg" viewBox="0 0 320 170" width="320" height="170"></svg>
+  <div class="card-detail" id="sunDetail"></div>
+</div>
+
+<div class="abhijit-card" id="abhijitCard">
+  <div class="abhijit-icon abhijit-inactive" id="abhijitIcon">☉</div>
+  <div class="abhijit-body">
+    <div class="abhijit-title" id="abhijitTitle">Abhijit Lagnam</div>
+    <div class="abhijit-time" id="abhijitTime">—</div>
+    <div class="abhijit-note" id="abhijitNote"></div>
+  </div>
+</div>
+
+<div class="weather-card" id="weatherCard">
+  <div class="weather-icon" id="weatherIcon">🌡</div>
+  <div>
+    <div class="weather-temp" id="weatherTemp">—</div>
+    <div class="weather-desc" id="weatherDesc">Loading weather…</div>
+  </div>
+</div>
+
+<div class="footer">
+  Astronomical calculations are approximate (±1 tithi).<br>
+  Consult a traditional panchāṅgam for ritual precision.
+</div>
+
+<script>
+// ── Config ──
+let LAT = 46.10, LON = -77.50, LOCATION_NAME = 'Deep River, ON';
+const DEG = Math.PI / 180, RAD = 180 / Math.PI;
+function mod360(x) { return ((x % 360) + 360) % 360; }
+
+const YEAR_NAMES = [
+  {en:'Prabhava',te:'ప్రభవ'},{en:'Vibhava',te:'విభవ'},{en:'Śukla',te:'శుక్ల'},
+  {en:'Pramodoota',te:'ప్రమోదూత'},{en:'Prajotpatti',te:'ప్రజోత్పత్తి'},{en:'Āṅgīrasa',te:'ఆంగీరస'},
+  {en:'Śrīmukha',te:'శ్రీముఖ'},{en:'Bhāva',te:'భావ'},{en:'Yuva',te:'యువ'},
+  {en:'Dhātā',te:'ధాత'},{en:'Īśvara',te:'ఈశ్వర'},{en:'Bahudhānya',te:'బహుధాన్య'},
+  {en:'Pramāthī',te:'ప్రమాథీ'},{en:'Vikrama',te:'విక్రమ'},{en:'Vṛṣa',te:'వృష'},
+  {en:'Chitrabhānu',te:'చిత్రభాను'},{en:'Svabhānu',te:'స్వభాను'},{en:'Tāraṇa',te:'తారణ'},
+  {en:'Pārthiva',te:'పార్థివ'},{en:'Vyaya',te:'వ్యయ'},{en:'Sarvajit',te:'సర్వజిత్'},
+  {en:'Sarvadhārī',te:'సర్వధారి'},{en:'Virodhī',te:'విరోధి'},{en:'Vikṛtī',te:'వికృతి'},
+  {en:'Khara',te:'ఖర'},{en:'Nandana',te:'నందన'},{en:'Vijaya',te:'విజయ'},
+  {en:'Jaya',te:'జయ'},{en:'Manmatha',te:'మన్మథ'},{en:'Durmukhi',te:'దుర్ముఖి'},
+  {en:'Hemalamba',te:'హేమలంబ'},{en:'Vilambī',te:'విలంబి'},{en:'Vikārī',te:'వికారి'},
+  {en:'Śārvarī',te:'శార్వరి'},{en:'Plava',te:'ప్లవ'},{en:'Śubhakṛt',te:'శుభకృత్'},
+  {en:'Śobhakṛt',te:'శోభకృత్'},{en:'Krodhī',te:'క్రోధి'},{en:'Viśvāvasu',te:'విశ్వావసు'},
+  {en:'Parābhava',te:'పరాభవ'},{en:'Plavaṅga',te:'ప్లవంగ'},{en:'Kīlaka',te:'కీలక'},
+  {en:'Saumya',te:'సౌమ్య'},{en:'Sādhāraṇa',te:'సాధారణ'},{en:'Virodhikṛt',te:'విరోధికృత్'},
+  {en:'Parīdhāvī',te:'పరీధావి'},{en:'Pramādīca',te:'ప్రమాదీచ'},{en:'Ānanda',te:'ఆనంద'},
+  {en:'Rākṣasa',te:'రాక్షస'},{en:'Anala',te:'అనల'},{en:'Piṅgala',te:'పింగళ'},
+  {en:'Kālayuktī',te:'కాలయుక్తి'},{en:'Siddhārthī',te:'సిద్ధార్థి'},{en:'Raudrī',te:'రౌద్రి'},
+  {en:'Durmatī',te:'దుర్మతి'},{en:'Dundubhi',te:'దుందుభి'},{en:'Rudhirodgārī',te:'రుధిరోద్గారి'},
+  {en:'Raktākṣī',te:'రక్తాక్షి'},{en:'Krodhana',te:'క్రోధన'},{en:'Akṣaya',te:'అక్షయ'}
+];
+
+const TITHI_NAMES_EN = ['Pratipadā','Dvitīyā','Tṛtīyā','Caturthī','Pañcamī','Ṣaṣṭhī','Saptamī','Aṣṭamī','Navamī','Daśamī','Ekādaśī','Dvādaśī','Trayodaśī','Caturdaśī','Pūrṇimā'];
+const TITHI_NAMES_TE = ['పాడ్యమి','విదియ','తదియ','చవితి','పంచమి','షష్ఠి','సప్తమి','అష్టమి','నవమి','దశమి','ఏకాదశి','ద్వాదశి','త్రయోదశి','చతుర్దశి','పౌర్ణమి'];
+
+const MASA_NAMES = [
+  {en:'Chaitra',te:'చైత్రము'},{en:'Vaiśākha',te:'వైశాఖము'},
+  {en:'Jyeṣṭha',te:'జ్యేష్ఠము'},{en:'Āṣāḍha',te:'ఆషాఢము'},
+  {en:'Śrāvaṇa',te:'శ్రావణము'},{en:'Bhādrapada',te:'భాద్రపదము'},
+  {en:'Āśvina',te:'ఆశ్వయుజము'},{en:'Kārttika',te:'కార్తీకము'},
+  {en:'Mārgaśīrṣa',te:'మార్గశిరము'},{en:'Puṣya',te:'పుష్యము'},
+  {en:'Māgha',te:'మాఘము'},{en:'Phālguna',te:'ఫాల్గుణము'}
+];
+
+const RITU_NAMES = [
+  {en:'Vasanta',te:'వసంతము',desc:'Spring'},{en:'Grīṣma',te:'గ్రీష్మము',desc:'Summer'},
+  {en:'Varṣā',te:'వర్షము',desc:'Monsoon'},{en:'Śarad',te:'శరత్తు',desc:'Autumn'},
+  {en:'Hemanta',te:'హేమంతము',desc:'Early Winter'},{en:'Śiśira',te:'శిశిరము',desc:'Late Winter'}
+];
+
+// ── Astronomical Engine ──
+function julianDate(y, m, d, ut) {
+  if (m <= 2) { y--; m += 12; }
+  const A = Math.floor(y / 100), B = 2 - A + Math.floor(A / 4);
+  return Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (m + 1)) + d + ut / 24 + B - 1524.5;
+}
+
+function sunLongitude(jd) {
+  const T = (jd - 2451545.0) / 36525;
+  const L0 = mod360(280.46646 + 36000.76983 * T + 0.0003032 * T * T);
+  const M = mod360(357.52911 + 35999.05029 * T - 0.0001537 * T * T);
+  const C = (1.914602 - 0.004817 * T) * Math.sin(M * DEG)
+          + (0.019993 - 0.000101 * T) * Math.sin(2 * M * DEG)
+          + 0.000289 * Math.sin(3 * M * DEG);
+  const omega = 125.04 - 1934.136 * T;
+  return mod360(L0 + C - 0.00569 - 0.00478 * Math.sin(omega * DEG));
+}
+
+function moonLongitude(jd) {
+  const T = (jd - 2451545.0) / 36525;
+  const Lp = mod360(218.3165 + 481267.8813 * T);
+  const D  = mod360(297.8502 + 445267.1115 * T);
+  const M  = mod360(357.5291 + 35999.0503 * T);
+  const Mp = mod360(134.9634 + 477198.8676 * T);
+  const F  = mod360(93.2720 + 483202.0175 * T);
+  return mod360(Lp + 6.289*Math.sin(Mp*DEG) - 1.274*Math.sin((2*D-Mp)*DEG)
+    + 0.658*Math.sin(2*D*DEG) + 0.214*Math.sin(2*Mp*DEG) - 0.186*Math.sin(M*DEG)
+    - 0.114*Math.sin(2*F*DEG) + 0.059*Math.sin((2*D-2*Mp)*DEG)
+    + 0.057*Math.sin((2*D-M-Mp)*DEG) + 0.053*Math.sin((2*D+Mp)*DEG)
+    + 0.046*Math.sin((2*D-M)*DEG) - 0.041*Math.sin((M-Mp)*DEG)
+    - 0.035*Math.sin(D*DEG) - 0.030*Math.sin((M+Mp)*DEG));
+}
+
+function ayanamsa(jd) { return 23.85 + 0.01361 * (jd - 2451545.0) / 365.25; }
+
+function computeSunriseSunset(year, month, day, lat, lon) {
+  const jd = julianDate(year, month, day, 12);
+  const Jstar = Math.round(jd - 2451545.0009 - lon / 360);
+  const M = mod360(357.5291 + 0.98560028 * Jstar);
+  const C = 1.9148*Math.sin(M*DEG) + 0.0200*Math.sin(2*M*DEG) + 0.0003*Math.sin(3*M*DEG);
+  const lam = mod360(M + C + 180 + 102.9372);
+  const dec = Math.asin(Math.sin(lam*DEG) * Math.sin(23.4393*DEG)) * RAD;
+  const cosH = (Math.sin(-0.833*DEG) - Math.sin(lat*DEG)*Math.sin(dec*DEG)) / (Math.cos(lat*DEG)*Math.cos(dec*DEG));
+  if (Math.abs(cosH) > 1) return null;
+  const H = Math.acos(cosH) * RAD;
+  const B = 360/365.242 * (julianDate(year, month, day, 0) - julianDate(year, 1, 1, 0) - 81);
+  const EoT = 9.87*Math.sin(2*B*DEG) - 7.53*Math.cos(B*DEG) - 1.5*Math.sin(B*DEG);
+  const solarNoonMin = 720 - 4*lon - EoT;
+  return { sunrise: (solarNoonMin - 4*H) / 60, sunset: (solarNoonMin + 4*H) / 60, solarNoon: solarNoonMin / 60 };
+}
+
+function getTithiInfo(jd) {
+  const diff = mod360(moonLongitude(jd) - sunLongitude(jd));
+  const tithiNum = Math.floor(diff / 12);
+  const fraction = (diff - tithiNum * 12) / 12;
+  const paksha = tithiNum < 15 ? 'śukla' : 'kṛṣṇa';
+  const idx = tithiNum < 15 ? tithiNum : tithiNum - 15;
+  let nameEn, nameTe;
+  if (idx === 14 && paksha === 'kṛṣṇa') { nameEn = 'Amāvāsyā'; nameTe = 'అమావాస్య'; }
+  else { nameEn = TITHI_NAMES_EN[idx]; nameTe = TITHI_NAMES_TE[idx]; }
+  return { tithiNum, nameEn, nameTe, paksha, fraction, elongation: diff };
+}
+
+function getSolarMonth(jd) { return Math.floor(mod360(sunLongitude(jd) - ayanamsa(jd)) / 30); }
+function getRitu(masaIdx) { return Math.floor(masaIdx / 2); }
+function getAyana(jd) {
+  const s = mod360(sunLongitude(jd) - ayanamsa(jd));
+  return (s >= 270 || s < 90)
+    ? {en:'Uttarāyaṇa',te:'ఉత్తరాయణము'} : {en:'Dakṣiṇāyaṇa',te:'దక్షిణాయణము'};
+}
+function getTeluguYear(d) {
+  let y = d.getFullYear(); if (d.getMonth()+1 < 4) y--;
+  return YEAR_NAMES[((y - 2023 + 36) % 60 + 60) % 60];
+}
+function formatTime(hUtc, tz) {
+  let l = hUtc + tz; if (l < 0) l += 24; if (l >= 24) l -= 24;
+  const h = Math.floor(l), m = Math.floor((l-h)*60);
+  return `${h===0?12:h>12?h-12:h}:${String(m).padStart(2,'0')} ${h>=12?'PM':'AM'}`;
+}
+
+// ── Moon SVG ──
+function drawMoon(el, elong) {
+  const cx=60, cy=60, r=38;
+  const illum = (1-Math.cos(elong*DEG))/2, waxing = elong<=180;
+  let s = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="var(--moon-dark)" stroke="var(--border)" stroke-width="1"/>`;
+  if (illum > 0.005) {
+    const tx = r * Math.abs(Math.cos(elong*DEG));
+    if (waxing) {
+      s += `<path d="M ${cx} ${cy-r} A ${r} ${r} 0 0 1 ${cx} ${cy+r} A ${tx} ${r} 0 0 ${elong<=90?1:0} ${cx} ${cy-r} Z" fill="var(--moon-lit)"/>`;
+    } else {
+      const wa = 360-elong;
+      s += `<path d="M ${cx} ${cy-r} A ${r} ${r} 0 0 0 ${cx} ${cy+r} A ${tx} ${r} 0 0 ${wa<=90?0:1} ${cx} ${cy-r} Z" fill="var(--moon-lit)"/>`;
+    }
+  }
+  s += `<circle cx="${cx-8}" cy="${cy-10}" r="4" fill="var(--moon-dark)" opacity="0.12"/>`;
+  s += `<circle cx="${cx+12}" cy="${cy+6}" r="3" fill="var(--moon-dark)" opacity="0.10"/>`;
+  s += `<circle cx="${cx-4}" cy="${cy+14}" r="2.5" fill="var(--moon-dark)" opacity="0.08"/>`;
+  el.innerHTML = s;
+}
+
+// ── Sun Arc SVG ──
+function drawSunPath(el, riseH, setH, noonH, curH, tz) {
+  const rL=riseH+tz, sL=setH+tz, nL=noonH+tz, cL=curH+tz;
+  const W=320, H=170, mg=30, aW=W-60, bY=H-35, pY=30;
+  const pts = [{l:'Dawn',t:rL},{l:'Saṅgava',t:(rL+nL)/2},{l:'Madhyāhna',t:nL},{l:'Aparāhṇa',t:(nL+sL)/2},{l:'Sāyam',t:sL}];
+  const tX = t => mg+((t-rL)/(sL-rL))*aW;
+  const tY = t => bY-Math.sin(((t-rL)/(sL-rL))*Math.PI)*(bY-pY);
+  let s = `<defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--sky-day)" stop-opacity="0.3"/><stop offset="100%" stop-color="var(--sky-dawn)" stop-opacity="0.1"/></linearGradient></defs>`;
+  let ap = `M ${mg} ${bY}`;
+  for (let i=0;i<=40;i++) { const t=rL+(sL-rL)*i/40; ap+=` L ${tX(t)} ${tY(t)}`; }
+  s += `<path d="${ap} L ${mg+aW} ${bY} Z" fill="url(#sg)"/>`;
+  s += `<line x1="${mg-10}" y1="${bY}" x2="${W-mg+10}" y2="${bY}" stroke="var(--horizon)" stroke-width="2.5" stroke-linecap="round"/>`;
+  s += `<text x="${W-mg+10}" y="${bY+14}" fill="var(--horizon)" font-size="9" text-anchor="end" font-family="var(--font-body)">Horizon</text>`;
+  let sa = `M ${mg} ${bY}`;
+  for (let i=0;i<=40;i++) { const t=rL+(sL-rL)*i/40; sa+=` L ${tX(t)} ${tY(t)}`; }
+  s += `<path d="${sa}" fill="none" stroke="var(--sun-fill)" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.5"/>`;
+  pts.forEach((p,i) => {
+    const x=tX(p.t), y=tY(p.t);
+    s += `<circle cx="${x}" cy="${y}" r="4" fill="var(--accent)" opacity="0.4"/>`;
+    const ts = formatTime(p.t-tz, tz), above = y>pY+30, ty = above?y-10:y+16;
+    const a = i===0?'start':i===4?'end':'middle';
+    s += `<text x="${x}" y="${ty}" fill="var(--fg-muted)" font-size="8" text-anchor="${a}" font-family="var(--font-body)">${p.l}</text>`;
+    s += `<text x="${x}" y="${ty+10}" fill="var(--fg-muted)" font-size="7" text-anchor="${a}" font-family="var(--font-body)" opacity="0.7">${ts}</text>`;
+  });
+  if (cL>=rL && cL<=sL) {
+    const sx=tX(cL), sy=tY(cL);
+    s += `<circle cx="${sx}" cy="${sy}" r="14" fill="var(--sun-fill)" opacity="0.15"/>`;
+    s += `<circle cx="${sx}" cy="${sy}" r="9" fill="var(--sun-fill)" opacity="0.3"/>`;
+    s += `<circle cx="${sx}" cy="${sy}" r="6" fill="var(--sun-fill)"/>`;
+    for (let a=0;a<360;a+=45) {
+      s += `<line x1="${sx+8*Math.cos(a*DEG)}" y1="${sy+8*Math.sin(a*DEG)}" x2="${sx+12*Math.cos(a*DEG)}" y2="${sy+12*Math.sin(a*DEG)}" stroke="var(--sun-fill)" stroke-width="1.5" stroke-linecap="round"/>`;
+    }
+  } else {
+    s += `<text x="${W/2}" y="${bY+16}" fill="var(--fg-muted)" font-size="10" text-anchor="middle" font-family="var(--font-body)" font-style="italic">Sun below horizon</text>`;
+  }
+  el.innerHTML = s;
+}
+
+// ── Weather ──
+const WMO_CODES = {0:'Clear',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',48:'Depositing rime fog',51:'Light drizzle',53:'Moderate drizzle',55:'Dense drizzle',61:'Slight rain',63:'Moderate rain',65:'Heavy rain',71:'Slight snow',73:'Moderate snow',75:'Heavy snow',77:'Snow grains',80:'Slight showers',81:'Moderate showers',82:'Violent showers',85:'Slight snow showers',86:'Heavy snow showers',95:'Thunderstorm',96:'Thunderstorm with slight hail',99:'Thunderstorm with heavy hail'};
+const WMO_ICONS = {0:'☀️',1:'🌤',2:'⛅',3:'☁️',45:'🌫',48:'🌫',51:'🌦',53:'🌧',55:'🌧',61:'🌧',63:'🌧',65:'🌧',71:'🌨',73:'🌨',75:'❄️',77:'❄️',80:'🌦',81:'🌧',82:'⛈',85:'🌨',86:'❄️',95:'⛈',96:'⛈',99:'⛈'};
+
+async function fetchWeather() {
+  try {
+    const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current_weather=true&timezone=auto`);
+    if (!r.ok) throw 0;
+    const cw = (await r.json()).current_weather;
+    const c = cw.temperature, f = (c*9/5+32).toFixed(1);
+    document.getElementById('weatherTemp').innerHTML = `${c.toFixed(1)}°C <span class="weather-temp-alt">${f}°F</span>`;
+    document.getElementById('weatherDesc').textContent = WMO_CODES[cw.weathercode] || 'Unknown';
+    document.getElementById('weatherIcon').textContent = WMO_ICONS[cw.weathercode] || '🌡';
+  } catch(e) {
+    document.getElementById('weatherTemp').textContent = '—';
+    document.getElementById('weatherDesc').innerHTML = '<span class="weather-error">Weather unavailable — check network</span>';
+  }
+}
+
+function requestLocation() {
+  if (!navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(pos => {
+    LAT = pos.coords.latitude; LON = pos.coords.longitude;
+    LOCATION_NAME = `${LAT.toFixed(2)}°N, ${Math.abs(LON).toFixed(2)}°${LON<0?'W':'E'}`;
+    document.getElementById('locationBar').innerHTML = '📍 ' + LOCATION_NAME;
+    updateAll(); fetchWeather();
+  }, () => {});
+}
+
+// ── Main ──
+function updateAll() {
+  const now = new Date(), tz = -now.getTimezoneOffset()/60;
+  const year = now.getFullYear(), month = now.getMonth()+1, day = now.getDate(), dow = now.getDay();
+  const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('dateDisplay').textContent = `${DAYS[dow]}, ${MONTHS[month-1]} ${day}, ${year}`;
+  const ty = getTeluguYear(now);
+  document.getElementById('teluguYearDisplay').textContent = ty.te;
+  document.getElementById('yearSub').textContent = `${ty.en} — Samvatsara`;
+
+  const sun = computeSunriseSunset(year, month, day, LAT, LON);
+  if (!sun) return;
+
+  // Tithi at sunrise
+  const tSR = getTithiInfo(julianDate(year, month, day, sun.sunrise));
+  document.getElementById('sunriseTithi').textContent = tSR.nameEn;
+  document.getElementById('sunriseTithiDetail').textContent = `${tSR.nameTe} · ${tSR.paksha==='śukla'?'Śukla':'Kṛṣṇa'} · Sunrise ${formatTime(sun.sunrise, tz)}`;
+
+  // Current tithi
+  const utcH = now.getUTCHours()+now.getUTCMinutes()/60+now.getUTCSeconds()/3600;
+  const tNow = getTithiInfo(julianDate(year, month, day, utcH));
+  document.getElementById('currentTithi').textContent = tNow.nameEn;
+  document.getElementById('currentTithiDetail').textContent = `${tNow.nameTe} · ${tNow.paksha==='śukla'?'Śukla':'Kṛṣṇa'} · ${Math.floor(tNow.fraction*100)}% elapsed`;
+
+  // Paksha / Masa / Ritu / Ayana
+  const jdN = julianDate(year, month, day, utcH);
+  const pk = tNow.paksha==='śukla';
+  document.getElementById('pakshaVal').textContent = pk?'Śukla':'Kṛṣṇa';
+  document.getElementById('pakshaSub').textContent = pk?'శుక్ల · Bright':'కృష్ణ · Dark';
+  const mi = getSolarMonth(jdN);
+  document.getElementById('masaVal').textContent = MASA_NAMES[mi].en;
+  document.getElementById('masaSub').textContent = MASA_NAMES[mi].te;
+  const ri = getRitu(mi);
+  document.getElementById('rituVal').textContent = RITU_NAMES[ri].en;
+  document.getElementById('rituSub').textContent = `${RITU_NAMES[ri].te} · ${RITU_NAMES[ri].desc}`;
+  const ay = getAyana(jdN);
+  document.getElementById('ayanaVal').textContent = ay.en;
+  document.getElementById('ayanaSub').textContent = ay.te;
+
+  // Moon
+  drawMoon(document.getElementById('moonSvg'), tNow.elongation);
+  const moonPct = Math.floor((1-Math.cos(tNow.elongation*DEG))/2*100);
+  const phN = ['New Moon','Waxing Crescent','First Quarter','Waxing Gibbous','Full Moon','Waning Gibbous','Last Quarter','Waning Crescent'];
+  document.getElementById('moonDetail').textContent = `${phN[Math.floor(tNow.elongation/45)%8]} · ${moonPct}% illuminated`;
+
+  // Sun position
+  const curHL = now.getHours()+now.getMinutes()/60;
+  drawSunPath(document.getElementById('sunSvg'), sun.sunrise, sun.sunset, sun.solarNoon, utcH, tz);
+  const rise=sun.sunrise+tz, noon=sun.solarNoon+tz, set=sun.sunset+tz;
+  if (curHL>=rise && curHL<=set) {
+    const m1=(rise+noon)/2, m2=(noon+set)/2;
+    let kn; if(curHL<m1) kn='Prātaḥ kāla (Morning)'; else if(curHL<noon) kn='Saṅgava kāla (Forenoon)'; else if(curHL<m2) kn='Madhyāhna kāla (Midday)'; else kn='Aparāhṇa / Sāyam kāla (Afternoon)';
+    document.getElementById('sunDetail').textContent = `${kn} · Sunset ${formatTime(sun.sunset, tz)}`;
+  } else {
+    document.getElementById('sunDetail').textContent = `Rātri kāla (Night) · Sunrise ${formatTime(sun.sunrise, tz)}`;
+  }
+
+  // Abhijit Lagnam
+  const aS = noon-20/60, aE = noon+20/60, isWed = dow===3;
+  const inA = !isWed && curHL>=aS && curHL<=aE;
+  const ic = document.getElementById('abhijitIcon');
+  ic.className = `abhijit-icon ${inA?'abhijit-active':'abhijit-inactive'}`;
+  document.getElementById('abhijitTitle').textContent = inA ? 'Abhijit Lagnam — NOW' : 'Abhijit Lagnam';
+  document.getElementById('abhijitTime').textContent = `${formatTime(aS-tz, tz)} – ${formatTime(aE-tz, tz)}`;
+  const noteEl = document.getElementById('abhijitNote');
+  if (isWed) noteEl.textContent = 'Not applicable on Wednesdays (Budha-vāra)';
+  else if (curHL<aS) { const mu=Math.floor((aS-curHL)*60); noteEl.textContent = mu<=120?`Begins in ${mu} minutes`:''; }
+  else if (inA) noteEl.textContent = `${Math.floor((aE-curHL)*60)} minutes remaining`;
+  else noteEl.textContent = 'Concluded for today';
+}
+
+updateAll(); fetchWeather();
+setInterval(updateAll, 60000);
+
+// Register service worker for PWA / offline
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>

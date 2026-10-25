@@ -308,10 +308,10 @@ function drawMoon(el, elong) {
   if (illum > 0.005) {
     const tx = r * Math.abs(Math.cos(elong*DEG));
     if (waxing) {
-      s += `<path d="M ${cx} ${cy-r} A ${r} ${r} 0 0 1 ${cx} ${cy+r} A ${tx} ${r} 0 0 ${elong<=90?1:0} ${cx} ${cy-r} Z" fill="var(--moon-lit)"/>`;
+      s += `<path d="M ${cx} ${cy-r} A ${r} ${r} 0 0 1 ${cx} ${cy+r} A ${tx} ${r} 0 0 ${elong<=90?0:1} ${cx} ${cy-r} Z" fill="var(--moon-lit)"/>`;
     } else {
       const wa = 360-elong;
-      s += `<path d="M ${cx} ${cy-r} A ${r} ${r} 0 0 0 ${cx} ${cy+r} A ${tx} ${r} 0 0 ${wa<=90?0:1} ${cx} ${cy-r} Z" fill="var(--moon-lit)"/>`;
+      s += `<path d="M ${cx} ${cy-r} A ${r} ${r} 0 0 0 ${cx} ${cy+r} A ${tx} ${r} 0 0 ${wa<=90?1:0} ${cx} ${cy-r} Z" fill="var(--moon-lit)"/>`;
     }
   }
   s += `<circle cx="${cx-8}" cy="${cy-10}" r="4" fill="var(--moon-dark)" opacity="0.12"/>`;
